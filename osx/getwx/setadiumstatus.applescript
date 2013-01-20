@@ -7,7 +7,7 @@ on run argv
 	if appIsRunning("Skype") then
 		tell application "AppleScript Editor"
 			set cmd to "SET PROFILE MOOD_TEXT " & argv
-			Çevent sendskypÈ given Çclass cmndÈ:cmd, Çclass scrpÈ:"setadiumstatus"
+            «event sendskyp» given «class cmnd»:cmd, «class scrp»:"setadiumstatus"
 		end tell
 	end if
 end run
