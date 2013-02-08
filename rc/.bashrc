@@ -49,6 +49,10 @@ export LS_COLORS='di=1;32:ln=0;36:so=0;35:pi=0;35:ex=1;33:bd=0;35:cd=0;35'
 
 export TMPDIR=$HOME/tmp
 
+function gitbr  {
+git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\[\1\]/'
+}
+
 # In theory, this file won't ever be called for non-interactive shells, but
 # just in case, here's how to tell and do something about it, using the 
 # special '-' paramter.
@@ -68,6 +72,7 @@ else
     # Bash 3 doesn't support path shortening (ellipses)
     export PS1="\! \h:\w\$ "
     export PS1='\[\e[0;31m\]\! \h:\w\$ \[\e[0m\]'
+    export PS1='\[\e[0;31m\]\h$(gitbr):\w\$ \[\e[0m\]'
     # . ~/ellipses.bash
     # export PS1='\! \h:$(_dir_chomp $(pwd) 20)$ '
 fi
