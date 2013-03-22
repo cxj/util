@@ -35,12 +35,12 @@ bind '"\t":menu-complete'
 # Do not exit on a single control-D
 export IGNOREEOF=1
 
-export EDITOR='vim'     # in very different places on Mac, FreeBSD, etc.
+export EDITOR='vim'     # in very different places on OSX, FreeBSD, etc.
 export PAGER='/usr/bin/less'
 export GIT_PAGER='/usr/bin/less'
 export BLOCKSIZE='1024'
 export CVS_RSH='ssh'
-export JAVA_HOME='/Library/Java/Home'
+export JAVA_HOME='/Library/Java/Home'   # OSX
 export LESS='-X -R'
 export TAR_OPTIONS='--no-same-owner -m'
 
@@ -51,6 +51,12 @@ export TMPDIR=$HOME/tmp
 
 function gitbr  {
 git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\[\1\]/'
+}
+function gitbr2  {
+gb=`git branch  --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+if [ ! -z ${gb} ]; then 
+    echo -e "\033[0;32m${gb}"
+fi
 }
 
 # In theory, this file won't ever be called for non-interactive shells, but
@@ -69,12 +75,19 @@ else
     echo -ne "\033]0;${USER}@${HOSTNAME%%.*}\007"
 
     # echo This shell is interactive.
+
     # Bash 3 doesn't support path shortening (ellipses)
-    export PS1="\! \h:\w\$ "
-    export PS1='\[\e[0;31m\]\! \h:\w\$ \[\e[0m\]'
-    export PS1='\[\e[0;31m\]\h$(gitbr):\w\$ \[\e[0m\]'
     # . ~/ellipses.bash
     # export PS1='\! \h:$(_dir_chomp $(pwd) 20)$ '
+    export PS1="\! \h:\w\$ "
+    export PS1='\[\e[0;31m\]\! \h:\w\$ \[\e[0m\]'
+
+    # adds a nicely colored display of git branch, but causes command line
+    # editing/completion problems.  
+    # export PS1='\[\e[0;31m\]\h\e[0;32m\]$(gitbr)\e[0;31m\]:\w\$ \[\e[0m\]'
+
+    # an alternative to show git branch:
+    PROMPT_COMMAND="gitbr2"
 fi
 
 
