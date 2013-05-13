@@ -1,0 +1,174 @@
+#################################################################
+#   .tcshrc file
+#################################################################
+
+setenv EDITOR /usr/bin/vim
+setenv PAGER /usr/bin/less
+setenv GIT_PAGER /usr/bin/less      # does Git pay attention?  No.
+setenv BLOCKSIZE 1024       # for weird df and du commands
+setenv CVS_RSH ssh
+
+#         set up search path
+
+# if path is wrong, uname may not be found
+# switch (`uname`)
+switch ("$OSTYPE")
+case "darwin":
+    setenv JAVA_HOME /Library/Java/Home     # Mac OS X
+    set lpath = ( /usr/local/bin )
+    # FreeBSD figures it out automatically with the 'manpath' command
+    unsetenv MANPATH
+    breaksw
+
+case "FreeBSD":
+    set lpath = ( /usr/local/bin ~/lynx/bin )
+    # FreeBSD figures it out automatically with the 'manpath' command
+    unsetenv MANPATH
+    breaksw
+
+case "Linux":
+    set lpath = ( /opt/local/bin /usr/local/bin )
+    breaksw
+
+case "SunOS":
+    set lpath = ( /usr/local/bin /usr/ucb /usr/ccs/bin /etc)
+    setenv EDITOR /usr/local/bin/vim
+    setenv MANPATH /usr/share/man:/usr/local/man
+    breaksw
+
+default
+    echo "Unrecognized operating system.  lpath not set."
+endsw
+
+set path = ( ~/bin $lpath $path . )
+
+#         cd path
+set lcd = ( )  #  add parents of frequently used directories
+set cdpath = (~)
+
+#         set this for all shells
+
+set noclobber
+
+#         aliases for all shells
+
+alias drush     'php -d error_reporting=E_ALL^E_NOTICE ~/bin/drush/drush.php'
+
+# alias mystart   '/usr/local/mysql/support-files/mysql.server start'
+
+alias cd            'cd \!*;echo $cwd'
+alias cp            'cp -i'
+alias mv            'mv -i'
+alias rm            'rm -i'
+alias pwd           'echo $cwd'
+#alias del          'rm -i'
+umask 022
+
+#         skip remaining setup if not an interactive shell
+
+if ($?USER == 0 || $?prompt == 0) exit
+
+# don't clear the screen upon exiting, leave what i was looking at behind
+# -R to allow some ascii escape codes for color, for Git primarily, but others
+setenv LESS "-X -R"
+
+# make tar less annoying: always make me the owner and use current date/time
+setenv TAR_OPTIONS "--no-same-owner -m"
+
+unset autologout
+
+
+# Set colors explicitly
+setenv  LSCOLORS    "CxgxfxfxDxfxfxDeDeCeCe"
+setenv  LS_COLORS   'di=1;32:ln=0;36:so=0;35:pi=0;35:ex=1;33:bd=0;35:cd=0;35'
+
+
+# make sure we get core files
+limit core 800000
+limit coredumpsize 100m
+
+# prevent duplicates in pushd stack
+set dunique
+# use ellipsis '...' to indicate skipped directories
+set ellipsis
+
+
+#
+#          settings  for interactive shells
+#
+
+# setup to do international characters
+tty -s
+if ( $status == 0 ) stty cs8 -istrip -parenb
+
+
+# various other settings
+#
+set history=200
+set ignoreeof
+set savehist=80
+# basic prompt -- made fancier for tcsh later
+set prompt="`hostname -s`{`whoami`}\!: "
+
+set filec noclobber
+set autolist=ambiguous
+
+#
+#         ALIASES
+#
+
+alias   view    'vim -R'
+alias   vi      'vim'
+set TMPDIR=~/tmp
+
+alias   nm  'nm --defined-only'
+
+
+# shortcuts
+alias tree      'tree -L 4 -aFC \!*'
+alias t         'tree -L 4 -aFC \!*'
+alias d         'tree -d -L 1 -aFC \!*'
+
+alias h         'history \!* | more'
+alias ht        'history \!* | tail -20'
+
+# probably need to split these out by operating system :-p
+alias ls    'ls -FG '
+alias la    'ls -a'
+alias l     'ls -lartG'
+alias lt    'ls -lartG \!* | tail'
+alias l1    'ls -1'
+
+alias po    popd
+alias pu    pushd
+
+alias j     'jobs -l'
+
+#
+# csh will exit on $tcsh not found at this point.  very annoying.
+# and tcsh insists upon masquerading as csh.  thanks a helluva lot.
+#
+if ( $?tcsh == 1) then
+    # contains time of day
+    #   set prompt="[%B%t%b] %h [%~]:%m%# "
+
+    # any output in startup causes SSH to fail
+    # echo "Setting prompt..."
+
+    set prompt="%h %m:%c04%# "
+    setenv WHOAMI `whoami`
+    # set prompt = "%{\]1;\[$WHOAMI@%m\]%}%h %m:%c04%# "
+    set prompt = "%{\]1;\[%m\]%}%h %m:%c04%# "
+
+    # ESC]0;titleBELL set both window and icon (tab) title
+    # ESC]1; set icon (tab) title
+    # ESC]2; set window title
+    # set prompt="%h %m:%B%c03%b%#"
+
+    # some ansi color -- does not work well
+    #
+    #   set prompt="%{^[[1;34;47m%} %h %m:%~%# "
+
+    # Vi/Vim key bindings
+    bindkey -v
+endif
