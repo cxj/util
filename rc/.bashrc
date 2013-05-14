@@ -6,10 +6,9 @@ export PGDATA=/usr/local/var/postgres
 export LYNXTREE=~/lynx
 
 # WSO2 Web Services Framework WSF/C++
-export WSFCPP_HOME=/usr/local/wsf
+export WSFCPP_HOME=~/work/wso/install
+export WSFC_HOME=${WSFCPP_HOME}
 export WSF=$WSFCPP_HOME/bin
-# not a happy way of doing this:
-#export DYLD_LIBRARY_PATH=/usr/local/wsf/lib
 
 # Maven junk
 export M2_HOME=/usr/local/apache-maven/apache-maven-3.0.4
@@ -93,6 +92,7 @@ fi
 
 # aliases
 
+
 alias b='git branch'
 
 alias cp='cp -i'
@@ -118,6 +118,8 @@ lt ()   { command ls -lartG "$@" | tail ; }
 t ()    { command tree -L 4 -aFC "$@" ; }
 tree () { command tree -L 4 -aFC "$@" ; }
 f ()    { command find . -name "$@" ; }
+
+ssh ()  { command ssh "$@"; echo "]0;${HOSTNAME}" ; }
 
 OS=`uname -s`
 #if test "$OS" = "Darwin"
